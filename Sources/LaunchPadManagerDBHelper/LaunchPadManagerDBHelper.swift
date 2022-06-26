@@ -29,7 +29,7 @@ public struct LaunchPadManagerDBHelper {
     }
 
     public struct AppInfo {
-        let url: URL
-        let name: String
+        public let url: URL
+        public let name: String
     }
 }

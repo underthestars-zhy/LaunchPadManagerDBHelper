@@ -7,7 +7,8 @@ final class LaunchPadManagerDBHelperTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        let helper = try LaunchPadManagerDBHelper(.init(filePath: "/Users/zhuhaoyu/Downloads/temp.db"))
-        _ = try helper.getAllAppInfos()
+        let helper = try LaunchPadManagerDBHelper()
+        let apps = try helper.getAllAppInfos()
+        print(apps)
     }
 }

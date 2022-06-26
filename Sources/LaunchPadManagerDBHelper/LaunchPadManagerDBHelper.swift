@@ -6,8 +6,27 @@ public struct LaunchPadManagerDBHelper {
     let db: Connection
     let appsTable = Table("apps")
 
-    public init(_ path: URL) throws {
-        try self.db = Connection(path.universalPath())
+    public init() throws {
+        let path = try Self.safeShell("echo /private$(getconf DARWIN_USER_DIR)com.apple.dock.launchpad/db/db").trimmingCharacters(in: .newlines)
+        try self.db = Connection(path)
+    }
+
+    static func safeShell(_ command: String) throws -> String {
+        let task = Process()
+        let pipe = Pipe()
+
+        task.standardOutput = pipe
+        task.standardError = pipe
+        task.arguments = ["-c", command]
+        task.executableURL = URL(fileURLWithPath: "/bin/zsh")
+        task.standardInput = nil
+
+        try task.run()
+
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(data: data, encoding: .utf8)!
+
+        return output
     }
 
     public func getAllAppInfos() throws -> [AppInfo] {

@@ -11,6 +11,7 @@ public struct LaunchPadManagerDBHelper {
         try self.db = Connection(path)
     }
 
+    @discardableResult
     static func safeShell(_ command: String) throws -> String {
         let task = Process()
         let pipe = Pipe()

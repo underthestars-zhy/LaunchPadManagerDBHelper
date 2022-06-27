@@ -31,7 +31,9 @@ public struct LaunchPadManagerDBHelper {
 
     func getAllAppInfosFromApplication() throws -> [AppInfo] {
         let content = try FileManager.default.contentsOfDirectory(atPath: "/Applications")
-        return content.map { url in
+        return content.filter{
+            ($0 as NSString).pathExtension == "app"
+        }.map { url in
             let url = URL(universalFilePath: "/Applications/\(url)")
             return AppInfo(url: url, name: url.deletingPathExtension().lastPathComponent)
         }

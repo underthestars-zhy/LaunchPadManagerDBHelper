@@ -37,8 +37,12 @@ public struct LaunchPadManagerDBHelper {
         return try apps.compactMap { app in
             var isStale = false
             let url = try URL(resolvingBookmarkData: app.bookmark, bookmarkDataIsStale: &isStale)
-            return .init(url: url, name: app.title)
+            return .init(id: app.id, url: url, name: app.title)
         }
+    }
+
+    public func removeApp(_ app: AppInfo) throws {
+        try db.run(appsTable.where(Expression<Int>("item_id") == app.id).delete())
     }
 
     struct Apps {
@@ -48,6 +52,7 @@ public struct LaunchPadManagerDBHelper {
     }
 
     public struct AppInfo {
+        let id: Int
         public let url: URL
         public let name: String
     }

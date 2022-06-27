@@ -43,6 +43,7 @@ public struct LaunchPadManagerDBHelper {
 
     public func removeApp(_ app: AppInfo) throws {
         try db.run(appsTable.where(Expression<Int>("item_id") == app.id).delete())
+        try Self.safeShell("killall Dock")
     }
 
     struct Apps {

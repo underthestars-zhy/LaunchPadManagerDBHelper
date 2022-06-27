@@ -15,4 +15,12 @@ extension URL {
             self.init(fileURLWithPath: universalFilePath)
         }
     }
+
+    func universalPath() -> String {
+        if #available(macOS 13, *) {
+            return self.path().removingPercentEncoding ?? self.path()
+        } else {
+            return self.path.removingPercentEncoding ?? self.path
+        }
+    }
 }

@@ -42,11 +42,21 @@ public struct LaunchPadManagerDBHelper {
             Apps(id: row[Expression<Int>("item_id")], title: row[Expression<String>("title")], bookmark: row[Expression<Data>("bookmark")])
         }
 
-        return try Set(apps.compactMap { app in
+        var infos: [AppInfo] = try apps.compactMap { app in
             var isStale = false
             let url = try URL(resolvingBookmarkData: app.bookmark, bookmarkDataIsStale: &isStale)
             return .init(url: url, name: app.title)
-        } + getAllAppInfosFromApplication()).map { $0 }
+        }
+
+        for app in try getAllAppInfosFromApplication() {
+            if !infos.contains(where: { info in
+                info.url.universalPath() == app.url.universalPath() + "/" || info.name == app.name
+            }) {
+                infos.append(app)
+            }
+        }
+
+        return infos
     }
 
     struct Apps {
@@ -55,12 +65,8 @@ public struct LaunchPadManagerDBHelper {
         let bookmark: Data
     }
 
-    public struct AppInfo: Hashable {
+    public struct AppInfo {
         public let url: URL
         public let name: String
-
-        public func hash(into hasher: inout Hasher) {
-            hasher.combine("\(url)")
-        }
     }
 }

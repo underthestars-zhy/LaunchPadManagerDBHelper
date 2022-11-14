@@ -35,10 +35,13 @@ public struct LaunchPadManagerDBHelper {
             Apps(id: row[Expression<Int>("item_id")], title: row[Expression<String>("title")], bookmark: row[Expression<Data>("bookmark")])
         }
 
-        return try apps.compactMap { app in
+        return apps.compactMap { app in
             var isStale = false
-            let url = try URL(resolvingBookmarkData: app.bookmark, bookmarkDataIsStale: &isStale)
-            return .init(id: app.id, url: url, name: app.title)
+            if let url = try? URL(resolvingBookmarkData: app.bookmark, bookmarkDataIsStale: &isStale) {
+                return .init(id: app.id, url: url, name: app.title)
+            } else {
+                return nil
+            }
         }
     }
 

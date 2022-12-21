@@ -42,7 +42,7 @@ public struct LaunchPadManagerDBHelper {
             } else {
                 return nil
             }
-        }
+        }.removeSameValue()
     }
 
     public func removeApp(_ app: AppInfo) throws {
@@ -56,9 +56,18 @@ public struct LaunchPadManagerDBHelper {
         let bookmark: Data
     }
 
-    public struct AppInfo {
+    public struct AppInfo: Hashable {
         let id: Int
         public let url: URL
         public let name: String
+
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(url)
+        }
+
+        public static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.url == rhs.url
+        }
     }
 }
+
